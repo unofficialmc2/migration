@@ -1,0 +1,48 @@
+#!/usr/bin/env php
+<?php
+
+if (is_file("../../../vendor/autoload.php")) {
+    require_once "../../../vendor/autoload.php";
+} elseif (is_file("./vendor/autoload.php")) {
+    require_once "./vendor/autoload.php";
+} elseif (is_file(__DIR__ . "/../vendor/autoload.php")) {
+    require_once __DIR__ . "/../vendor/autoload.php";
+} else {
+    throw new \Exception("Imposible de trouver l'autoload de composer");
+}
+
+$config_filename = $argv[1] ?? "";
+if ($config_filename == "") {
+    $config_filename = getcwd() . '/migration-config.json';
+    if (!is_file($config_filename)) {
+        touch($config_filename);
+        $structure = [
+            'migration_directory' => "./db/migration",
+            'config_extern' => [
+                "file" => "",
+                'array_path' => "",
+                "provider" => "provider",
+                "host" => "host",
+                "port" => "port",
+                "name" => "name",
+                "user" => "user",
+                "pass" => "pass"
+            ],
+            'config_intern' => [
+                "provider" => "",
+                "host" => "",
+                "port" => 0,
+                "name" => "",
+                "user" => "",
+                "pass" => ""
+            ]
+        ];
+        file_put_contents($config_filename, json_encode($structure));
+    }
+} elseif (!is_file($config_filename)) {
+    throw new \Exception("Impossible de trouver le fichier de configuration " . $config_filename);
+}
+
+$config = new \Migration\MigrationConfigFile($config_filename);
+$migration = new \Migration\Migration($config);
+$migration->run();

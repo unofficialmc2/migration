@@ -1,0 +1,8 @@
+# OS
+
+# IDE
+.vscode/
+.idea/
+
+# PROJET
+vendor/
