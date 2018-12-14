@@ -1,16 +1,19 @@
 {
-    "name": "fzed51/migration",
-    "description": "Outil de migration de base de donn\u0000e",
-    "type": "library",
-    "license": "MIT",
-    "authors": [
-        {
-            "name": "Fabien Sanchez",
-            "email": "fzed51@users.noreply.github.com"
-        }
-    ],
-    "minimum-stability": "stable",
-    "require": {
-        "php": "^7.1"
+  "name": "fzed51/migration",
+  "description": "Outil de migration de base de donnée",
+  "type": "library",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Fabien Sanchez",
+      "email": "fzed51@users.noreply.github.com"
     }
+  ],
+  "minimum-stability": "stable",
+  "require": {
+    "php": "^7.1"
+  },
+  "bin": [
+    "./bin/migrate"
+  ]
 }
