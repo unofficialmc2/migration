@@ -18,5 +18,10 @@
   },
   "bin": [
     "./bin/migrate"
-  ]
+  ],
+  "autoload": {
+    "psr-4": {
+      "Migration\\": "./src"
+    }
+  }
 }

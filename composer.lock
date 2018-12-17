@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "145acc45704b9513c0b6c8dd17ccf70d",
+    "content-hash": "c13340f22669288d74439b30cfe9b9fd",
     "packages": [
         {
             "name": "fzed51/pdo-helper",
@@ -51,7 +51,9 @@
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {
-        "php": "^7.1"
+        "php": "^7.1",
+        "ext-pdo": "*",
+        "ext-json": "*"
     },
     "platform-dev": []
 }
