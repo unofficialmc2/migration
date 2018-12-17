@@ -1,11 +1,49 @@
 {
     "_readme": [
         "This file locks the dependencies of your project to a known state",
-        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "c3c652ca45b67bf360d930671c41617f",
-    "packages": [],
+    "content-hash": "145acc45704b9513c0b6c8dd17ccf70d",
+    "packages": [
+        {
+            "name": "fzed51/pdo-helper",
+            "version": "v1.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/fzed51/pdo-helper.git",
+                "reference": "a58bf6abe728b0b6c45776dfa5c717f105722671"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/fzed51/pdo-helper/zipball/a58bf6abe728b0b6c45776dfa5c717f105722671",
+                "reference": "a58bf6abe728b0b6c45776dfa5c717f105722671",
+                "shasum": ""
+            },
+            "require": {
+                "ext-pdo": "*",
+                "php": "^7.1"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Helper\\": "./src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Fabien Sanchez",
+                    "email": "fzed51@users.noreply.github.com"
+                }
+            ],
+            "description": "Helper pour faciliter l'initialisation d'objet PDO",
+            "time": "2018-12-17T10:25:43+00:00"
+        }
+    ],
     "packages-dev": [],
     "aliases": [],
     "minimum-stability": "stable",
