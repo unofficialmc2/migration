@@ -209,12 +209,13 @@ class Migration
      * liste les fichiers de migration d'un provider
      * @param string $provider
      * @return array|false
+     * @throws \DomainException
      */
     private function getQueryFiles(string $provider)
     {
         $dbDir = $this->config->migration_directory;
         if (!is_dir($dbDir)) {
-            throw new \Exception("Le dossier {$dbDir} n'a pas été trouvé");
+            throw new \DomainException("Le dossier {$dbDir} n'a pas été trouvé");
         }
         $query_files = glob($dbDir . $provider . '/????????-??-*.sql');
         $query_files = array_map(
@@ -245,7 +246,7 @@ class Migration
     }
 
     /**
-     * enregistre la migration en base
+     * Enregistre la migration en base
      * @param string $filename
      */
     private function storeMigration(string $filename)

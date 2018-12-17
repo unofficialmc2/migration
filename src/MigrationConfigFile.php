@@ -58,7 +58,7 @@ class MigrationConfigFile extends MigrationConfig
             if (isset($config[$path])) {
                 $config = $config[$path];
             } else {
-                throw new \Exception(
+                throw new \DomainException(
                     "La structure ne correspond pas au chemin indiqué dans array_path."
                 );
             }
