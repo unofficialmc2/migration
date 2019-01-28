@@ -18,6 +18,8 @@ try {
         (new \Console\Options\Option('config_file', 'c'))
             ->setType(\Console\Options\Option::T_STRING)
             ->setDefault('./migration-config.json'),
+        (new \Console\Options\Option('new', 'n'))
+            ->setType(\Console\Options\Option::T_STRING),
         (new \Console\Options\Option('init', 'i'))
             ->setType(\Console\Options\Option::T_FLAG)
     ]);
@@ -29,10 +31,16 @@ try {
     } else {
         $config_filename = realpath($options['config_file']) || realpath($options[0]);
         if ($config_filename === false) {
-            throw new \RuntimeException('Impossible de trouver le fichier de configuration ' . $options['config_file']);
-        // } elseif (empty($options['new'])) {
-        //     $config = new \Migration\MigrationConfigFile($config_filename);
-        //
+            throw new \RuntimeException(
+                'Impossible de trouver le fichier de configuration '
+                . $options['config_file']
+            );
+        }
+        if (isset($options['new'])) {
+            $config = new \Migration\MigrationConfigFile($config_filename);
+            $newMigration = new \Migration\CreateMigration($config);
+            $newMigration->setNewMigrationName($options['new']);
+            $newMigration->run();
         } else {
             $config = new \Migration\MigrationConfigFile($config_filename);
             $migration = new \Migration\Migration($config);
