@@ -1,48 +1,36 @@
 #!/usr/bin/env php
 <?php
 
-if (is_file("../../../vendor/autoload.php")) {
-    require_once "../../../vendor/autoload.php";
-} elseif (is_file("./vendor/autoload.php")) {
-    require_once "./vendor/autoload.php";
-} elseif (is_file(__DIR__ . "/../vendor/autoload.php")) {
-    require_once __DIR__ . "/../vendor/autoload.php";
+if (is_file('../../../vendor/autoload.php')) {
+    require_once '../../../vendor/autoload.php';
+} elseif (is_file('./vendor/autoload.php')) {
+    require_once './vendor/autoload.php';
+} elseif (is_file(__DIR__ . '/../vendor/autoload.php')) {
+    require_once __DIR__ . '/../vendor/autoload.php';
 } else {
-    throw new \Exception("Imposible de trouver l'autoload de composer");
+    throw new \RuntimeException("Imposible de trouver l'autoload de composer");
 }
 
-$config_filename = $argv[1] ?? "";
-if ($config_filename == "") {
-    $config_filename = getcwd() . '/migration-config.json';
-    if (!is_file($config_filename)) {
-        touch($config_filename);
-        $structure = [
-            'migration_directory' => "./db/migration",
-            'config_extern' => [
-                "file" => "",
-                'array_path' => "",
-                "provider" => "provider",
-                "host" => "host",
-                "port" => "port",
-                "name" => "name",
-                "user" => "user",
-                "pass" => "pass"
-            ],
-            'config_intern' => [
-                "provider" => "",
-                "host" => "",
-                "port" => 0,
-                "name" => "",
-                "user" => "",
-                "pass" => ""
-            ]
-        ];
-        file_put_contents($config_filename, json_encode($structure));
-    }
-} elseif (!is_file($config_filename)) {
-    throw new \Exception("Impossible de trouver le fichier de configuration " . $config_filename);
-}
+$options = new \Console\Options\OptionParser([
+    (new \Console\Options\Option('config_file', 'cf'))
+        ->setType(\Console\Options\Option::T_STRING)
+        ->setDefault('./migration-config.json'),
+    new \Console\Options\Option('init', 'i')
+]);
+$options->parse($argv);
 
-$config = new \Migration\MigrationConfigFile($config_filename);
-$migration = new \Migration\Migration($config);
-$migration->run();
+$config_filename = realpath($options['config_file']) || $options[0];
+
+if ($options['init']) {
+    $init = new \Migration\MigrationInit($options['config_file']);
+    $init->run();
+} elseif ($config_filename === false) {
+    throw new \RuntimeException('Impossible de trouver le fichier de configuration ' . $options['config_file']);
+// } elseif (empty($options['new'])) {
+//     $config = new \Migration\MigrationConfigFile($config_filename);
+//
+} else {
+    $config = new \Migration\MigrationConfigFile($config_filename);
+    $migration = new \Migration\Migration($config);
+    $migration->run();
+}

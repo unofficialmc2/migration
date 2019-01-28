@@ -4,8 +4,44 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "c13340f22669288d74439b30cfe9b9fd",
+    "content-hash": "c252afd81e8367512134a2262d7a018d",
     "packages": [
+        {
+            "name": "fzed51/console-options",
+            "version": "v1.0.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/fzed51/console-options.git",
+                "reference": "07624808fdd4094db682bf540146c859478f0c95"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/fzed51/console-options/zipball/07624808fdd4094db682bf540146c859478f0c95",
+                "reference": "07624808fdd4094db682bf540146c859478f0c95",
+                "shasum": ""
+            },
+            "require-dev": {
+                "fzed51/run-test": "^1"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Console\\Options\\": "./src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Fabien Sanchez",
+                    "email": "fzed51@users.noreply.github.com"
+                }
+            ],
+            "description": "option parser pour ligne de commande PHP",
+            "time": "2018-12-20T12:22:26+00:00"
+        },
         {
             "name": "fzed51/pdo-helper",
             "version": "v1.0",
