@@ -8,8 +8,6 @@ declare(strict_types=1);
 
 namespace Migration;
 
-use function Couchbase\basicDecoderV1;
-
 /**
  * Class CreateMigration
  * @package Migration
@@ -46,6 +44,9 @@ class CreateMigration
         $this->config = $config;
     }
 
+    /**
+     * @throws \Exception
+     */
     public function run(): void
     {
         $providers = $this->getProviders();
@@ -84,10 +85,10 @@ class CreateMigration
         do {
             $index++;
             $pattern = $path . DIRECTORY_SEPARATOR
-                . $date . '-' . sibstr('00' . $index, -2) . '-*.sql';
+                . $date . '-' . substr('00' . $index, -2) . '-*.sql';
             $notFound = 1 > count(glob($pattern));
         } while ($notFound);
-        $filename = $date . '-' . sibstr('00' . $index, -2) . '-'
+        $filename = $date . '-' . substr('00' . $index, -2) . '-'
             . $this->new_migration . '.sql';
         touch($path . DIRECTORY_SEPARATOR . $filename);
         return $filename;
