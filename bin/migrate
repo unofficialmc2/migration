@@ -1,6 +1,8 @@
 #!/usr/bin/env php
 <?php
 
+ini_set('display_errors', 'On');
+
 if (is_file('../../../vendor/autoload.php')) {
     require_once '../../../vendor/autoload.php';
 } elseif (is_file('./vendor/autoload.php')) {
@@ -11,26 +13,30 @@ if (is_file('../../../vendor/autoload.php')) {
     throw new \RuntimeException("Imposible de trouver l'autoload de composer");
 }
 
-$options = new \Console\Options\OptionParser([
-    (new \Console\Options\Option('config_file', 'cf'))
-        ->setType(\Console\Options\Option::T_STRING)
-        ->setDefault('./migration-config.json'),
-    new \Console\Options\Option('init', 'i')
-]);
-$options->parse($argv);
+try {
+    $options = new \Console\Options\OptionParser([
+        (new \Console\Options\Option('config_file', 'c'))
+            ->setType(\Console\Options\Option::T_STRING)
+            ->setDefault('./migration-config.json'),
+        new \Console\Options\Option('init', 'i')
+    ]);
+    $options->parse($argv);
 
-$config_filename = realpath($options['config_file']) || $options[0];
+    $config_filename = realpath($options['config_file']) || $options[0];
 
-if ($options['init']) {
-    $init = new \Migration\MigrationInit($options['config_file']);
-    $init->run();
-} elseif ($config_filename === false) {
-    throw new \RuntimeException('Impossible de trouver le fichier de configuration ' . $options['config_file']);
-// } elseif (empty($options['new'])) {
-//     $config = new \Migration\MigrationConfigFile($config_filename);
-//
-} else {
-    $config = new \Migration\MigrationConfigFile($config_filename);
-    $migration = new \Migration\Migration($config);
-    $migration->run();
+    if ($options['init']) {
+        $init = new \Migration\MigrationInit($options['config_file']);
+        $init->run();
+    } elseif ($config_filename === false) {
+        throw new \RuntimeException('Impossible de trouver le fichier de configuration ' . $options['config_file']);
+    // } elseif (empty($options['new'])) {
+    //     $config = new \Migration\MigrationConfigFile($config_filename);
+    //
+    } else {
+        $config = new \Migration\MigrationConfigFile($config_filename);
+        $migration = new \Migration\Migration($config);
+        $migration->run();
+    }
+} catch (\Throwable $t) {
+    echo $t->getMessage() . PHP_EOL;
 }
