@@ -29,7 +29,7 @@ try {
         $init = new \Migration\MigrationInit($options['config_file']);
         $init->run();
     } else {
-        $config_filename = realpath($options['config_file']) || realpath($options[0]);
+        $config_filename = realpath($options['config_file']) ?: realpath($options[0]);
         if ($config_filename === false) {
             throw new \RuntimeException(
                 'Impossible de trouver le fichier de configuration '
