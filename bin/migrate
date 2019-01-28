@@ -18,7 +18,8 @@ try {
         (new \Console\Options\Option('config_file', 'c'))
             ->setType(\Console\Options\Option::T_STRING)
             ->setDefault('./migration-config.json'),
-        new \Console\Options\Option('init', 'i')
+        (new \Console\Options\Option('init', 'i'))
+            ->setType(\Console\Options\Option::T_FLAG)
     ]);
     $options->parse($argv);
 
