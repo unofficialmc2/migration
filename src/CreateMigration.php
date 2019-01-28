@@ -82,12 +82,13 @@ class CreateMigration
     {
         $date = (new \DateTime())->format('Ymd');
         $index = 0;
+        $notFound = false;
         do {
             $index++;
             $pattern = $path . DIRECTORY_SEPARATOR
                 . $date . '-' . substr('00' . $index, -2) . '-*.sql';
-            $notFound = 1 > count(glob($pattern));
-        } while ($notFound);
+            $notFound = (0 === count(glob($pattern)));
+        } while (!$notFound);
         $filename = $date . '-' . substr('00' . $index, -2) . '-'
             . $this->new_migration . '.sql';
         touch($path . DIRECTORY_SEPARATOR . $filename);
