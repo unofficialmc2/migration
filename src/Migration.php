@@ -19,12 +19,12 @@ class Migration
      * connexion PDO
      * @var \PDO
      */
-    protected $pdo;
+    private $pdo;
     /**
      * historique des migration
      * @var array
      */
-    protected $story;
+    private $story;
 
     /**
      * Migration constructor.
@@ -39,7 +39,7 @@ class Migration
      * Exécute le process de migration
      * @throws \Exception
      */
-    public function run()
+    public function run(): void
     {
         # connexion
         $this->connexion();
@@ -53,7 +53,7 @@ class Migration
      * Initialise la connexion
      * @throws \Exception
      */
-    private function connexion()
+    private function connexion(): void
     {
         $provider = $this->config->provider;
         switch ($provider) {
@@ -71,7 +71,7 @@ class Migration
                 );
                 break;
             default:
-                throw new \Exception("Le provider $provider est inconnue!");
+                throw new \RuntimeException("Le provider $provider est inconnue!");
         }
     }
 
@@ -79,7 +79,7 @@ class Migration
      * Initilise la base pour les migration
      * @throws \Exception
      */
-    private function setup()
+    private function setup(): void
     {
         $provider = $this->config->provider;
         try {
@@ -91,11 +91,11 @@ class Migration
             foreach ($this->getQuerySetupFiles($provider) as $filename) {
                 $this->executeQueryFile($filename);
             }
-            echo "migration : setup migration" . PHP_EOL;
+            echo 'migration : setup migration' . PHP_EOL;
             try {
                 $stm = $this->pdo->query('select * from migration_story');
             } catch (\PDOException $ex) {
-                throw new \Exception(
+                throw new \RuntimeException(
                     "Impossible d'initialiser l'historique des migration dans la base"
                 );
             }
@@ -112,9 +112,7 @@ class Migration
     {
         $query_files = glob(__DIR__ . '/../setup/' . $provider . '*.sql');
         $query_files = array_map(
-            function ($filename) {
-                return \realpath($filename);
-            },
+            'realpath',
             $query_files
         );
         sort($query_files);
@@ -126,32 +124,34 @@ class Migration
      * @param string $filename
      * @throws \Exception
      */
-    private function executeQueryFile(string $filename)
+    private function executeQueryFile(string $filename): void
     {
         $file_lines = file($filename);
-        $current_request = "";
+        $current_request = '';
         $index = 0;
         $start = 0;
         $end = 0;
         foreach ($file_lines as $line) {
             $index++;
             $line = trim($line);
-            if ($line == "") continue;
-            if (substr($line, 0, 3) == '---') {
-                if (strlen($current_request) > 0) {
+            if ($line === '') {
+                continue;
+            }
+            if (strpos($line, '---') === 0) {
+                if ($current_request !== '') {
                     $this->executeQuery($current_request, "$filename($start-$end)");
                 }
-                $current_request = "";
+                $current_request = '';
                 $start = 0;
                 $end = 0;
             } else {
                 $start = $start > 0 ? $start : $index;
                 $end = $index;
-                $current_request .= strlen($current_request) > 0 ? PHP_EOL : "";
+                $current_request .= $current_request !== '' ? PHP_EOL : '';
                 $current_request .= $line;
             }
         }
-        if (strlen($current_request) > 0) {
+        if ($current_request !== '') {
             $this->executeQuery($current_request, "$filename($start-$end)");
         }
     }
@@ -162,29 +162,29 @@ class Migration
      * @param string $info
      * @throws \Exception
      */
-    private function executeQuery(string $query, string $info = "")
+    private function executeQuery(string $query, string $info = ''): void
     {
         $query = $this->cleanQuery($query);
         try {
 
             if ($this->pdo->exec($query) === false) {
                 $error = $this->pdo->errorInfo();
-                throw new \Exception("[{$error[1]}] {$error[2]}]");
+                throw new \RuntimeException("[{$error[1]}] {$error[2]}]");
             }
         } catch (\Exception $ex) {
-            throw new \Exception("Impossible d'executer la requete $info.\n{$ex->getMessage()}");
+            throw new \RuntimeException("Impossible d'executer la requete $info.\n{$ex->getMessage()}");
         }
     }
 
     /**
      * netoie une requète, supprime le point virgule de fin
      * @param string $query
-     * @return bool|string
+     * @return boolean|string
      */
     private function cleanQuery(string $query)
     {
         trim($query);
-        if (substr($query, -1) == ';') {
+        if (substr($query, -1) === ';') {
             $query = substr($query, 0, -1);
         }
         return $query;
@@ -194,7 +194,7 @@ class Migration
      * exécute la migration
      * @throws \Exception
      */
-    private function migrate()
+    private function migrate(): void
     {
         $provider = $this->config->provider;
         foreach ($this->getQueryFiles($provider) as $filename) {
@@ -213,15 +213,13 @@ class Migration
      */
     private function getQueryFiles(string $provider)
     {
-        $dbDir = $this->config->migration_directory;
+        $dbDir = realpath($this->config->migration_directory) . DIRECTORY_SEPARATOR;
         if (!is_dir($dbDir)) {
             throw new \DomainException("Le dossier {$dbDir} n'a pas été trouvé");
         }
         $query_files = glob($dbDir . $provider . '/????????-??-*.sql');
         $query_files = array_map(
-            function ($filename) {
-                return \realpath($filename);
-            },
+            'realpath',
             $query_files
         );
         sort($query_files);
@@ -233,23 +231,20 @@ class Migration
      * @param string $filename
      * @return bool
      */
-    private function controlMigrationFilePassed(string $filename)
+    private function controlMigrationFilePassed(string $filename): bool
     {
         $file = basename(dirname($filename)) . '/' . basename($filename);
         $migration = array_filter($this->story, function ($story) use ($file) {
-            return ($story['FILE'] == $file);
+            return ($story['FILE'] === $file);
         });
-        if (count($migration) == 0) {
-            return false;
-        }
-        return true;
+        return !(count($migration) === 0);
     }
 
     /**
      * Enregistre la migration en base
      * @param string $filename
      */
-    private function storeMigration(string $filename)
+    private function storeMigration(string $filename): void
     {
         $file = basename(dirname($filename)) . '/' . basename($filename);
         $content = file_get_contents($filename);

@@ -26,13 +26,13 @@ class MigrationConfigFile extends MigrationConfig
      */
     public function __construct(string $config_filename)
     {
-        parent::__construct("", "", "", 0, "", "", "");
+        parent::__construct('', '', '', 0, '', '', '');
         if (!is_file($config_filename)) {
             throw new \RuntimeException("le fichier $config_filename n'a pas été trouvé.");
         }
         $this->config = json_decode(file_get_contents($config_filename));
         $this->migration_directory = $this->config->migration_directory;
-        if (is_file($this->config->config_extern->file ?? "")) {
+        if (is_file($this->config->config_extern->file ?? '')) {
             try {
                 $this->initExternPhp();
             } catch (\Throwable $er) {
@@ -49,17 +49,17 @@ class MigrationConfigFile extends MigrationConfig
     /**
      * Initialise la config avec un fichier PHP extern
      */
-    private function initExternPhp()
+    private function initExternPhp(): void
     {
-        $fichier = require $this->config->config_extern->file;
-        $arrayPath = explode('/', $this->config->config_extern->array_path?:[]);
+        $fichier = require (string)$this->config->config_extern->file;
+        $arrayPath = explode('/', $this->config->config_extern->array_path);
         $config = (array)$fichier;
         foreach ($arrayPath as $path) {
             if (isset($config[$path])) {
                 $config = $config[$path];
             } else {
                 throw new \DomainException(
-                    "La structure ne correspond pas au chemin indiqué dans array_path."
+                    'La structure ne correspond pas au chemin indiqué dans array_path.'
                 );
             }
         }
@@ -74,14 +74,14 @@ class MigrationConfigFile extends MigrationConfig
     /**
      * Initialise la config avec un le fichier de config
      */
-    private function initIntern()
+    private function initIntern(): void
     {
-        $this->provider = $this->config->config_intern->provider ?: "";
-        $this->host = $this->config->config_intern->host ?: "";
+        $this->provider = $this->config->config_intern->provider ?: '';
+        $this->host = $this->config->config_intern->host ?: '';
         $this->port = $this->config->config_intern->port ?: 0;
-        $this->name = $this->config->config_intern->name ?: "";
-        $this->user = $this->config->config_intern->user ?: "";
-        $this->pass = $this->config->config_intern->pass ?: "";
+        $this->name = $this->config->config_intern->name ?: '';
+        $this->user = $this->config->config_intern->user ?: '';
+        $this->pass = $this->config->config_intern->pass ?: '';
     }
 
 

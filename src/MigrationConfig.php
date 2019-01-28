@@ -63,7 +63,7 @@ class MigrationConfig
     public function __construct(string $migration_directory, string $provider, string $host, int $port, string $name, string $user, string $pass)
     {
         $migration_directory = str_replace('\\', '/', $migration_directory);
-        $migration_directory = substr($migration_directory, -1) == '/'
+        $migration_directory = substr($migration_directory, -1) === '/'
             ? $migration_directory
             : $migration_directory . '/';
         $this->migration_directory = $migration_directory;

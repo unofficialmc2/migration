@@ -13,7 +13,7 @@
   "require": {
     "php": "^7.1",
     "ext-json": "*",
-    "ext-mbstring": "*"
+    "ext-mbstring": "*",
     "ext-pdo": "*",
     "fzed51/pdo-helper": "^1.0",
     "fzed51/console-options": "^1.0"
