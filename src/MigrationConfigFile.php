@@ -1,4 +1,5 @@
 <?php
+
 /**
  * User: fabien.sanchez
  * Date: 14/09/2018
@@ -38,7 +39,7 @@ class MigrationConfigFile extends MigrationConfig
             } catch (\Throwable $er) {
                 throw new \RuntimeException(
                     "Le fichier de configuration externe n'est pas exploitable. "
-                    . $er->getMessage()
+                        . $er->getMessage()
                 );
             }
         } else {
@@ -51,24 +52,26 @@ class MigrationConfigFile extends MigrationConfig
      */
     private function initExternPhp(): void
     {
-        $fichier = require (string)$this->config->config_extern->file;
-        $arrayPath = explode('/', $this->config->config_extern->array_path);
-        $config = (array)$fichier;
-        foreach ($arrayPath as $path) {
-            if (isset($config[$path])) {
-                $config = $config[$path];
-            } else {
-                throw new \DomainException(
-                    'La structure ne correspond pas au chemin indiqué dans array_path.'
-                );
+        $fichier = require (string) $this->config->config_extern->file;
+        $config = (array) $fichier;
+        if (!empty($this->config->config_extern->array_path)) {
+            $arrayPath = explode('/', $this->config->config_extern->array_path);
+            foreach ($arrayPath as $path) {
+                if (isset($config[$path])) {
+                    $config = $config[$path];
+                } else {
+                    throw new \DomainException(
+                        'La structure ne correspond pas au chemin indiqué dans array_path.'
+                    );
+                }
             }
         }
-        $this->provider = $config[$this->config->config_extern->provider ?: 'provider'];
-        $this->host = $config[$this->config->config_extern->host ?: 'host'];
-        $this->port = $config[$this->config->config_extern->port ?: 'port'];
-        $this->name = $config[$this->config->config_extern->name ?: 'name'];
-        $this->user = $config[$this->config->config_extern->user ?: 'user'];
-        $this->pass = $config[$this->config->config_extern->pass ?: 'pass'];
+        $this->provider = $config[$this->config->config_extern->provider ?: 'provider'] ?: '';
+        $this->host = $config[$this->config->config_extern->host ?: 'host'] ?: '';
+        $this->port = $config[$this->config->config_extern->port ?: 'port'] ?: 0;
+        $this->name = $config[$this->config->config_extern->name ?: 'name'] ?: '';
+        $this->user = $config[$this->config->config_extern->user ?: 'user'] ?: '';
+        $this->pass = $config[$this->config->config_extern->pass ?: 'pass'] ?: '';
     }
 
     /**
@@ -83,6 +86,4 @@ class MigrationConfigFile extends MigrationConfig
         $this->user = $this->config->config_intern->user ?: '';
         $this->pass = $this->config->config_intern->pass ?: '';
     }
-
-
 }
