@@ -181,7 +181,7 @@ class MigrationCore
         if (!is_dir($dbDir)) {
             throw new \DomainException("Le dossier {$dbDir} n'a pas été trouvé");
         }
-        $query_files = glob($dbDir . $this->provider . '/????????-??-*.sql');
+        $query_files = glob($dbDir . DIRECTORY_SEPARATOR . $this->provider . DIRECTORY_SEPARATOR . '????????-??-*.sql');
         $query_files = array_map(
             'realpath',
             $query_files
@@ -197,7 +197,7 @@ class MigrationCore
      */
     private function controlMigrationFilePassed(string $filename): bool
     {
-        $file = basename(dirname($filename)) . '/' . basename($filename);
+        $file = basename(dirname($filename)) . DIRECTORY_SEPARATOR . basename($filename);
         $migration = array_filter($this->story, static function ($story) use ($file) {
             return ($story['FILE'] === $file);
         });
@@ -210,7 +210,7 @@ class MigrationCore
      */
     private function storeMigration(string $filename): void
     {
-        $file = basename(dirname($filename)) . '/' . basename($filename);
+        $file = basename(dirname($filename)) . DIRECTORY_SEPARATOR . basename($filename);
         $content = file_get_contents($filename);
         $checksum = sha1_file($filename);
         $stm = $this->pdo->prepare('INSERT INTO migration_story (file, content, checksum) VALUES (?, ?, ?)');
