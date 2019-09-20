@@ -8,6 +8,8 @@
 
 namespace Migration;
 
+use RuntimeException;
+
 /**
  * Class MigrationConfig
  * @package Migration
@@ -33,7 +35,7 @@ class MigrationConfigFile extends MigrationConfig
         }
         $this->config = json_decode(file_get_contents($config_filename));
         $this->migration_directory = $this->config->migration_directory;
-        if (is_file($this->config->config_extern->file ?? '')) {
+        if (isset($this->config->config_extern) && is_file($this->config->config_extern->file ?? '')) {
             try {
                 $this->initExternPhp();
             } catch (\Throwable $er) {
@@ -42,8 +44,10 @@ class MigrationConfigFile extends MigrationConfig
                         . $er->getMessage()
                 );
             }
-        } else {
+        } elseif(isset($this->config->config_intern)) {
             $this->initIntern();
+        } else {
+            throw new RuntimeException("Le fichier de configuration n'est pas valide")
         }
     }
 

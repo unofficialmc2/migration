@@ -1,23 +1,23 @@
 {
     "_readme": [
         "This file locks the dependencies of your project to a known state",
-        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "c252afd81e8367512134a2262d7a018d",
+    "content-hash": "83afb23e0900a76b71d1f50792f1efe2",
     "packages": [
         {
             "name": "fzed51/console-options",
-            "version": "v1.0.1",
+            "version": "v1.1.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/fzed51/console-options.git",
-                "reference": "07624808fdd4094db682bf540146c859478f0c95"
+                "reference": "0049517b5b1bd96d5ffdc4daf89e40ae240559c9"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/fzed51/console-options/zipball/07624808fdd4094db682bf540146c859478f0c95",
-                "reference": "07624808fdd4094db682bf540146c859478f0c95",
+                "url": "https://api.github.com/repos/fzed51/console-options/zipball/0049517b5b1bd96d5ffdc4daf89e40ae240559c9",
+                "reference": "0049517b5b1bd96d5ffdc4daf89e40ae240559c9",
                 "shasum": ""
             },
             "require-dev": {
@@ -40,20 +40,20 @@
                 }
             ],
             "description": "option parser pour ligne de commande PHP",
-            "time": "2018-12-20T12:22:26+00:00"
+            "time": "2019-01-30T10:29:11+00:00"
         },
         {
             "name": "fzed51/pdo-helper",
-            "version": "v1.0",
+            "version": "v1.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/fzed51/pdo-helper.git",
-                "reference": "a58bf6abe728b0b6c45776dfa5c717f105722671"
+                "reference": "c553ab3d9d4d606bad1bde3351a71bd49ef0d3cd"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/fzed51/pdo-helper/zipball/a58bf6abe728b0b6c45776dfa5c717f105722671",
-                "reference": "a58bf6abe728b0b6c45776dfa5c717f105722671",
+                "url": "https://api.github.com/repos/fzed51/pdo-helper/zipball/c553ab3d9d4d606bad1bde3351a71bd49ef0d3cd",
+                "reference": "c553ab3d9d4d606bad1bde3351a71bd49ef0d3cd",
                 "shasum": ""
             },
             "require": {
@@ -77,7 +77,7 @@
                 }
             ],
             "description": "Helper pour faciliter l'initialisation d'objet PDO",
-            "time": "2018-12-17T10:25:43+00:00"
+            "time": "2019-08-28T12:18:54+00:00"
         }
     ],
     "packages-dev": [],
@@ -88,8 +88,9 @@
     "prefer-lowest": false,
     "platform": {
         "php": "^7.1",
-        "ext-pdo": "*",
-        "ext-json": "*"
+        "ext-json": "*",
+        "ext-mbstring": "*",
+        "ext-pdo": "*"
     },
     "platform-dev": []
 }
