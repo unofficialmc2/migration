@@ -236,7 +236,7 @@ class MigrationCore
     {
         $this->migrationDirectory =
             preg_replace(
-                "/[\/\\]+/",
+                "/[\\/\\\\]+/",
                 DIRECTORY_SEPARATOR,
                 $migrationDirectory . DIRECTORY_SEPARATOR
             );
