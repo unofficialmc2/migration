@@ -44,10 +44,10 @@ class MigrationConfigFile extends MigrationConfig
                         . $er->getMessage()
                 );
             }
-        } elseif(isset($this->config->config_intern)) {
+        } elseif (isset($this->config->config_intern)) {
             $this->initIntern();
         } else {
-            throw new RuntimeException("Le fichier de configuration n'est pas valide")
+            throw new RuntimeException("Le fichier de configuration n'est pas valide");
         }
     }
 
