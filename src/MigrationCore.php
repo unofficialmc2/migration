@@ -177,7 +177,7 @@ class MigrationCore
      */
     private function getQueryFiles()
     {
-        $dbDir = realpath($this->config->migration_directory) . DIRECTORY_SEPARATOR;
+        $dbDir = realpath($this->migrationDirectory);
         if (!is_dir($dbDir)) {
             throw new \DomainException("Le dossier {$dbDir} n'a pas été trouvé");
         }
@@ -234,7 +234,12 @@ class MigrationCore
      */
     public function setMigrationDirectory(string $migrationDirectory)
     {
-        $this->migrationDirectory = $migrationDirectory;
+        $this->migrationDirectory =
+            preg_replace(
+                "/[\/\\]+/",
+                DIRECTORY_SEPARATOR,
+                $migrationDirectory . DIRECTORY_SEPARATOR
+            );
         return $this;
     }
 
