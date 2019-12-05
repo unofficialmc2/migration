@@ -52,12 +52,12 @@ class Migration extends MigrationCore
             case 'postgres':
             case 'postgresql':
                 $this->setProvider('postgres');
-                $this->setPdo(PDOFactory::sqlite(PDOFactory::pgsql(
+                $this->setPdo(PDOFactory::pgsql(
                     $this->config->name,
                     $this->config->host,
                     $this->config->user,
                     $this->config->pass
-                )));
+                ));
                 break;
             default:
                 throw new \RuntimeException("Le provider {$this->config->provider} est inconnue!");
