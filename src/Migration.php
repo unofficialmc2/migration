@@ -45,6 +45,15 @@ class Migration extends MigrationCore
     {
         $this->setMigrationDirectory($this->config->migration_directory);
         switch ($this->config->provider) {
+            case 'mysql':
+                $this->setProvider($this->config->provider);
+                $this->setPdo(PDOFactory::mysql(
+                    $this->config->host,
+                    $this->config->name,
+                    $this->config->user,
+                    $this->config->pass
+                ));
+                break;
             case 'sqlite':
                 $this->setProvider($this->config->provider);
                 $this->setPdo(PDOFactory::sqlite($this->config->name));
