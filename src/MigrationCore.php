@@ -199,7 +199,7 @@ class MigrationCore
     {
         $file = basename(dirname($filename)) . DIRECTORY_SEPARATOR . basename($filename);
         $migration = array_filter($this->story, static function ($story) use ($file) {
-            return ($story['FILE'] === $file);
+            return (self::cleanDirectorySeparator($story['FILE']) === self::cleanDirectorySeparator($file));
         });
         return !(count($migration) === 0);
     }
@@ -214,7 +214,7 @@ class MigrationCore
         $content = file_get_contents($filename);
         $checksum = sha1_file($filename);
         $stm = $this->pdo->prepare('INSERT INTO migration_story (file, content, checksum) VALUES (?, ?, ?)');
-        $stm->execute([$file, $content, $checksum]);
+        $stm->execute([self::cleanDirectorySeparator($file), $content, $checksum]);
         echo "migration : $file" . PHP_EOL;
     }
 
@@ -251,5 +251,15 @@ class MigrationCore
     {
         $this->pdo = $pdo;
         return $this;
+    }
+
+    /**
+     * netoye un chemin (linux/windows) pour harmoniser les directorySeparator
+     * @param string $path
+     * @return string
+     */
+    protected static function cleanDirectorySeparator(string $path): string
+    {
+        return str_replace(['/', '\\'], '/', $path);
     }
 }
