@@ -2,7 +2,6 @@
 
 namespace Migration;
 
-use DomainException;
 use Exception;
 use PDO;
 use PDOException;
@@ -31,7 +30,7 @@ class MigrationCore
     private $pdo;
     /**
      * historique des migration
-     * @var array
+     * @var array<string,mixed>[]
      */
     private $story;
 
@@ -76,11 +75,14 @@ class MigrationCore
 
     /**
      * Récupère le fichiers de setup pour un provider
-     * @return array|false
+     * @return string[]
      */
-    private function getQuerySetupFiles()
+    private function getQuerySetupFiles(): array
     {
         $query_files = glob(__DIR__ . '/../setup/' . $this->provider . '*.sql');
+        if ($query_files === false) {
+            throw new RuntimeException("Il est impossible de listers les fichier de setup de la base.");
+        }
         $query_files = array_map(
             'realpath',
             $query_files
@@ -136,7 +138,6 @@ class MigrationCore
     {
         $query = $this->cleanQuery($query);
         try {
-
             if ($this->pdo->exec($query) === false) {
                 $error = $this->pdo->errorInfo();
                 throw new RuntimeException("[{$error[1]}] {$error[2]}]");
@@ -179,22 +180,24 @@ class MigrationCore
 
     /**
      * liste les fichiers de migration d'un provider
-     * @return array|false
-     * @throws \DomainException
+     * @return string[]
      */
-    private function getQueryFiles()
+    private function getQueryFiles(): array
     {
         $dbDir = realpath($this->migrationDirectory);
         if (!is_dir($dbDir)) {
-            throw new DomainException("Le dossier {$dbDir} n'a pas été trouvé");
+            throw new RuntimeException("Le dossier {$dbDir} n'a pas été trouvé");
         }
-        $query_files = glob($dbDir . DIRECTORY_SEPARATOR . $this->provider . DIRECTORY_SEPARATOR . '????????-??-*.sql');
-        $query_files = array_map(
+        $queryFiles = glob($dbDir . DIRECTORY_SEPARATOR . $this->provider . DIRECTORY_SEPARATOR . '????????-??-*.sql');
+        if ($queryFiles === false) {
+            throw new RuntimeException("Il est impossible de lister les fichier de migration du provider {$this->provider}.");
+        }
+        $queryFiles = array_map(
             'realpath',
-            $query_files
+            $queryFiles
         );
-        sort($query_files);
-        return $query_files;
+        sort($queryFiles);
+        return $queryFiles;
     }
 
     /**

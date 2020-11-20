@@ -8,7 +8,9 @@
 
 namespace Migration;
 
+use DomainException;
 use RuntimeException;
+use Throwable;
 
 /**
  * Class MigrationConfig
@@ -19,7 +21,7 @@ class MigrationConfigFile extends MigrationConfig
 
     /**
      * config du fichier
-     * @var array
+     * @var array<string,mixed>
      */
     private $config;
 
@@ -31,20 +33,37 @@ class MigrationConfigFile extends MigrationConfig
     {
         parent::__construct('', '', '', 0, '', '', '');
         if (!is_file($config_filename)) {
-            throw new \RuntimeException("le fichier $config_filename n'a pas été trouvé.");
+            throw new RuntimeException("le fichier $config_filename n'a pas été trouvé.");
         }
-        $this->config = json_decode(file_get_contents($config_filename));
-        $this->migration_directory = $this->config->migration_directory;
-        if (isset($this->config->config_extern) && is_file($this->config->config_extern->file ?? '')) {
+        $this->config = json_decode(file_get_contents($config_filename), true);
+        if (json_last_error() !== JSON_ERROR_NONE) {
+            $errorMsg = json_last_error_msg();
+            throw new RuntimeException(
+                "Le fichier de configuration externe n'est pas au format json ($errorMsg)."
+            );
+        }
+        if (!isset($this->config['migration_directory'])) {
+            throw new RuntimeException(
+                "Le dossier 'migration_directory' n'est pas initialisé."
+            );
+        }
+        $migrationDirectory = $this->config['migration_directory'];
+        if (!is_dir($migrationDirectory)) {
+            throw new RuntimeException(
+                "Le dossier 'migration_directory' n'est pas un dossier valide."
+            );
+        }
+        $this->migration_directory = $migrationDirectory;
+        if (isset($this->config['config_extern']) && is_file($this->config['config_extern']['file'] ?? '')) {
             try {
                 $this->initExternPhp();
-            } catch (\Throwable $er) {
-                throw new \RuntimeException(
+            } catch (Throwable $er) {
+                throw new RuntimeException(
                     "Le fichier de configuration externe n'est pas exploitable. "
-                        . $er->getMessage()
+                    . $er->getMessage()
                 );
             }
-        } elseif (isset($this->config->config_intern)) {
+        } elseif (isset($this->config['config_intern'])) {
             $this->initIntern();
         } else {
             throw new RuntimeException("Le fichier de configuration n'est pas valide");
@@ -56,26 +75,34 @@ class MigrationConfigFile extends MigrationConfig
      */
     private function initExternPhp(): void
     {
-        $fichier = require (string) $this->config->config_extern->file;
-        $config = (array) $fichier;
-        if (!empty($this->config->config_extern->array_path)) {
-            $arrayPath = explode('/', $this->config->config_extern->array_path);
+        $configExtern = $this->config['config_extern'];
+        try {
+            /** @noinspection PhpIncludeInspection */
+            $config = require (string)$configExtern['file'];
+        } catch (Throwable $t) {
+            throw new RuntimeException("le fichier externe n'est pas interprétable");
+        }
+        if (!is_array($config)) {
+            throw new RuntimeException("le fichier externe doit être un tableau");
+        }
+        if (!empty($configExtern['array_path'] ?? '')) {
+            $arrayPath = explode('/', $configExtern['array_path']);
             foreach ($arrayPath as $path) {
                 if (isset($config[$path])) {
                     $config = $config[$path];
                 } else {
-                    throw new \DomainException(
+                    throw new DomainException(
                         'La structure ne correspond pas au chemin indiqué dans array_path.'
                     );
                 }
             }
         }
-        $this->provider = $config[$this->config->config_extern->provider ?: 'provider'] ?: '';
-        $this->host = $config[$this->config->config_extern->host ?: 'host'] ?: '';
-        $this->port = $config[$this->config->config_extern->port ?: 'port'] ?: 0;
-        $this->name = $config[$this->config->config_extern->name ?: 'name'] ?: '';
-        $this->user = $config[$this->config->config_extern->user ?: 'user'] ?: '';
-        $this->pass = $config[$this->config->config_extern->pass ?: 'pass'] ?: '';
+        $this->provider = $config[$configExtern['provider'] ?? 'provider'] ?? '';
+        $this->host = $config[$configExtern['host'] ?? 'host'] ?? '';
+        $this->port = $config[$configExtern['port'] ?? 'port'] ?? 0;
+        $this->name = $config[$configExtern['name'] ?? 'name'] ?? '';
+        $this->user = $config[$configExtern['user'] ?? 'user'] ?? '';
+        $this->pass = $config[$configExtern['pass'] ?? 'pass'] ?? '';
     }
 
     /**
@@ -83,11 +110,12 @@ class MigrationConfigFile extends MigrationConfig
      */
     private function initIntern(): void
     {
-        $this->provider = $this->config->config_intern->provider ?: '';
-        $this->host = $this->config->config_intern->host ?: '';
-        $this->port = $this->config->config_intern->port ?: 0;
-        $this->name = $this->config->config_intern->name ?: '';
-        $this->user = $this->config->config_intern->user ?: '';
-        $this->pass = $this->config->config_intern->pass ?: '';
+        $configIntern = $this->config['config_intern'];
+        $this->provider = $configIntern['provider'] ?? '';
+        $this->host = $configIntern['host'] ?? '';
+        $this->port = $configIntern['port'] ?? 0;
+        $this->name = $configIntern['name'] ?? '';
+        $this->user = $configIntern['user'] ?? '';
+        $this->pass = $configIntern['pass'] ?? '';
     }
 }

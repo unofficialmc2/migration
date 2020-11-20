@@ -57,8 +57,9 @@ class MigrationInit
             ];
             file_put_contents($this->config_file, json_encode($structure, JSON_PRETTY_PRINT));
         } else {
-            throw new \RuntimeException
-            ("Impossible d'initialiser le fichier de configuration car ce fichier existe déjà.");
+            throw new \RuntimeException(
+                "Impossible d'initialiser le fichier de configuration car ce fichier existe déjà."
+            );
         }
     }
 }

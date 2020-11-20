@@ -16,7 +16,7 @@ class CreateMigration
 {
     /**
      * liste des providers
-     * @var array
+     * @var string[]
      */
     private static $providers = [
         'mysql',
@@ -58,7 +58,7 @@ class CreateMigration
 
     /**
      * liste les providers et leur chemin de migration
-     * @return array
+     * @return array<string,string>
      */
     private function getProviders(): array
     {
@@ -126,5 +126,4 @@ class CreateMigration
         $str = trim($str, '_');
         return $str;
     }
-
 }

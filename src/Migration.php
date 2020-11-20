@@ -72,5 +72,4 @@ class Migration extends MigrationCore
                 throw new \RuntimeException("Le provider {$this->config->provider} est inconnue!");
         }
     }
-
 }
