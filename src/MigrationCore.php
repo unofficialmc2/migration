@@ -1,8 +1,12 @@
-<?php
+<?php /** @noinspection SqlNoDataSourceInspection */
 
 namespace Migration;
 
-use Helper\PDOFactory;
+use DomainException;
+use Exception;
+use PDO;
+use PDOException;
+use RuntimeException;
 
 /**
  * Class Migration
@@ -51,7 +55,7 @@ class MigrationCore
     {
         try {
             $stm = $this->pdo->query('select * from migration_story');
-        } catch (\PDOException $ex) {
+        } catch (PDOException $ex) {
             $stm = false;
         }
         if ($stm === false) {
@@ -61,13 +65,13 @@ class MigrationCore
             echo 'migration : setup migration' . PHP_EOL;
             try {
                 $stm = $this->pdo->query('select * from migration_story');
-            } catch (\PDOException $ex) {
-                throw new \RuntimeException(
+            } catch (PDOException $ex) {
+                throw new RuntimeException(
                     "Impossible d'initialiser l'historique des migration dans la base"
                 );
             }
         }
-        $this->story = $stm->fetchAll(\PDO::FETCH_ASSOC);
+        $this->story = $stm->fetchAll(PDO::FETCH_ASSOC);
     }
 
     /**
@@ -135,21 +139,24 @@ class MigrationCore
 
             if ($this->pdo->exec($query) === false) {
                 $error = $this->pdo->errorInfo();
-                throw new \RuntimeException("[{$error[1]}] {$error[2]}]");
+                throw new RuntimeException("[{$error[1]}] {$error[2]}]");
             }
-        } catch (\Exception $ex) {
-            throw new \RuntimeException("Impossible d'executer la requete $info.\n{$ex->getMessage()}");
+        } catch (Exception $ex) {
+            throw new RuntimeException("Impossible d'executer la requete $info.\n{$ex->getMessage()}");
         }
     }
 
     /**
      * netoie une requète, supprime le point virgule de fin
      * @param string $query
-     * @return boolean|string
+     * @return string
      */
-    private function cleanQuery(string $query)
+    private function cleanQuery(string $query): string
     {
-        trim($query);
+        $query = trim($query);
+        if (empty($query)) {
+            return $query;
+        }
         if (substr($query, -1) === ';') {
             $query = substr($query, 0, -1);
         }
@@ -179,7 +186,7 @@ class MigrationCore
     {
         $dbDir = realpath($this->migrationDirectory);
         if (!is_dir($dbDir)) {
-            throw new \DomainException("Le dossier {$dbDir} n'a pas été trouvé");
+            throw new DomainException("Le dossier {$dbDir} n'a pas été trouvé");
         }
         $query_files = glob($dbDir . DIRECTORY_SEPARATOR . $this->provider . DIRECTORY_SEPARATOR . '????????-??-*.sql');
         $query_files = array_map(
@@ -247,7 +254,7 @@ class MigrationCore
      * @param \PDO $pdo
      * @return static
      */
-    public function setPdo(\PDO $pdo)
+    public function setPdo(PDO $pdo)
     {
         $this->pdo = $pdo;
         return $this;
