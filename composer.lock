@@ -4,20 +4,20 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "2724242d0673469f5dbbe711de770ef0",
+    "content-hash": "758d5eb5cd7a3b78eb9fb57f70b88af8",
     "packages": [
         {
             "name": "fzed51/console-options",
-            "version": "v1.1.2",
+            "version": "v1.1.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/fzed51/console-options.git",
-                "reference": "ab4c94f23c34f526211c51cf37b3ae23beb5b686"
+                "reference": "f0f64aed974239ebaebd986cbbb26ca767605480"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/fzed51/console-options/zipball/ab4c94f23c34f526211c51cf37b3ae23beb5b686",
-                "reference": "ab4c94f23c34f526211c51cf37b3ae23beb5b686",
+                "url": "https://api.github.com/repos/fzed51/console-options/zipball/f0f64aed974239ebaebd986cbbb26ca767605480",
+                "reference": "f0f64aed974239ebaebd986cbbb26ca767605480",
                 "shasum": ""
             },
             "require": {
@@ -48,9 +48,9 @@
             "description": "option parser pour ligne de commande PHP",
             "support": {
                 "issues": "https://github.com/fzed51/console-options/issues",
-                "source": "https://github.com/fzed51/console-options/tree/v1.1.2"
+                "source": "https://github.com/fzed51/console-options/tree/v1.1.4"
             },
-            "time": "2020-11-20T16:04:34+00:00"
+            "time": "2020-11-20T23:28:50+00:00"
         },
         {
             "name": "fzed51/pdo-helper",
@@ -683,16 +683,16 @@
         },
         {
             "name": "phpstan/phpstan",
-            "version": "0.12.56",
+            "version": "0.12.57",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpstan/phpstan.git",
-                "reference": "007fd5d700c41e1bb27795fae15a2383f8fa4ba1"
+                "reference": "f9909d1d0c44b4cbaf72babcf80e8f14d6fdd55b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/007fd5d700c41e1bb27795fae15a2383f8fa4ba1",
-                "reference": "007fd5d700c41e1bb27795fae15a2383f8fa4ba1",
+                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/f9909d1d0c44b4cbaf72babcf80e8f14d6fdd55b",
+                "reference": "f9909d1d0c44b4cbaf72babcf80e8f14d6fdd55b",
                 "shasum": ""
             },
             "require": {
@@ -723,7 +723,7 @@
             "description": "PHPStan - PHP Static Analysis Tool",
             "support": {
                 "issues": "https://github.com/phpstan/phpstan/issues",
-                "source": "https://github.com/phpstan/phpstan/tree/0.12.56"
+                "source": "https://github.com/phpstan/phpstan/tree/0.12.57"
             },
             "funding": [
                 {
@@ -739,7 +739,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2020-11-16T22:59:18+00:00"
+            "time": "2020-11-21T12:53:28+00:00"
         },
         {
             "name": "phpunit/php-code-coverage",
@@ -2371,7 +2371,7 @@
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {
-        "php": "^7.1",
+        "php": "^7.2",
         "ext-json": "*",
         "ext-mbstring": "*",
         "ext-pdo": "*"
