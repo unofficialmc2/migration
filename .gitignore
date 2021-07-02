@@ -7,3 +7,4 @@
 # PROJET
 vendor/
 /.phpunit.result.cache
+/data.sqlite
