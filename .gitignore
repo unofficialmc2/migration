@@ -6,3 +6,4 @@
 
 # PROJET
 vendor/
+/.phpunit.result.cache
