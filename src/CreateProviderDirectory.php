@@ -1,0 +1,78 @@
+<?php
+
+namespace Migration;
+
+use InvalidArgumentException;
+use LogicException;
+use RuntimeException;
+
+class CreateProviderDirectory
+{
+    private const AUTORIZED_PROVIDER = [
+        "postgres",
+        "postgresql",
+        "mysql",
+        "sqlite",
+    ];
+    private MigrationConfig $config;
+    private ?string $provider = null;
+
+    /**
+     * @param \Migration\MigrationConfig $config
+     */
+    public function __construct(MigrationConfig $config)
+    {
+        $this->config = $config;
+    }
+
+    /**
+     * @param string $provider
+     * @param-stan  "postgres"|"postgresql"|"mysql"|"sqlite" $provider
+     * @return void
+     */
+    public function setProvider(string $provider): CreateProviderDirectory
+    {
+        $provider = strtolower($provider);
+        if(in_array($provider, self::AUTORIZED_PROVIDER)){
+            $providers = implode(", ", self::AUTORIZED_PROVIDER);
+            throw new InvalidArgumentException("Le provider '$provider' n'est pas connu. Utiliser : $providers.");
+        }
+        $this->provider = $provider;
+    }
+
+    /**
+     * @return void
+     */
+    public function run(): void
+    {
+        if ($this->provider === null) {
+            throw new LogicException("le nom du provider n'a pas été donné");
+        }
+        $migrationDirectory = $this->config->migration_directory;
+        if(!is_dir($migrationDirectory)){
+            throw new LogicException(
+                "impossible de créer le dossier du provider, le dossier de migration ($migrationDirectory) n'existe pas"
+            );
+        }
+        switch ($this->provider) {
+            case 'mysql':
+            case 'sqlite':
+                $this->createDirectory($migrationDirectory, $this->provider);
+                break;
+            case 'postgres':
+            case 'postgresql':
+                $this->createDirectory($migrationDirectory, 'postgres');
+                break;
+            default:
+                throw new RuntimeException("Le provider {$this->provider} est inconnue!");
+        }
+    }
+
+    private function createDirectory(string $migrationDirectory, ?string $provider)
+    {
+        $concurrentDirectory = $migrationDirectory . DIRECTORY_SEPARATOR . $provider;
+        if (!mkdir($concurrentDirectory ) && !is_dir($concurrentDirectory)) {
+            throw new RuntimeException("impossible de créer le dossier du provier '$provider' dans '$migrationDirectory'.");
+        }
+    }
+}

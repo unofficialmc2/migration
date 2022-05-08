@@ -1,6 +1,14 @@
 #!/usr/bin/env php
 <?php
 
+use Console\Options\Option;
+use Console\Options\OptionParser;
+use Migration\CreateMigration;
+use Migration\CreateProviderDirectory;
+use Migration\Migration;
+use Migration\MigrationConfigFile;
+use Migration\MigrationInit;
+
 ini_set('display_errors', 'On');
 
 if (is_file('../../../vendor/autoload.php')) {
@@ -10,23 +18,25 @@ if (is_file('../../../vendor/autoload.php')) {
 } elseif (is_file(__DIR__ . '/../vendor/autoload.php')) {
     require_once __DIR__ . '/../vendor/autoload.php';
 } else {
-    throw new \RuntimeException("Imposible de trouver l'autoload de composer");
+    throw new RuntimeException("Imposible de trouver l'autoload de composer");
 }
 
 try {
-    $options = new \Console\Options\OptionParser([
-        (new \Console\Options\Option('config_file', 'c'))
-            ->setType(\Console\Options\Option::T_STRING)
+    $options = new OptionParser([
+        (new Option('config_file', 'c'))
+            ->setType(Option::T_STRING)
             ->setDefault('./migration-config.json'),
-        (new \Console\Options\Option('new', 'n'))
-            ->setType(\Console\Options\Option::T_STRING),
-        (new \Console\Options\Option('init', 'i'))
-            ->setType(\Console\Options\Option::T_FLAG)
+        (new Option('new', 'n'))
+            ->setType(Option::T_STRING),
+        (new Option('provider', 'p'))
+            ->setType(Option::T_STRING),
+        (new Option('init', 'i'))
+            ->setType(Option::T_FLAG)
     ]);
     $options->parse($argv);
 
     if ($options['init']) {
-        $init = new \Migration\MigrationInit($options['config_file']);
+        $init = new MigrationInit($options['config_file']);
         $init->run();
     } else {
         if (isset($options['config_file'])) {
@@ -37,22 +47,25 @@ try {
             $config_filename = false;
         }
         if ($config_filename === false) {
-            throw new \RuntimeException(
+            throw new RuntimeException(
                 'Impossible de trouver le fichier de configuration '
                 . $options['config_file']
             );
         }
-        if (isset($options['new'])) {
-            $config = new \Migration\MigrationConfigFile($config_filename);
-            $newMigration = new \Migration\CreateMigration($config);
+        $config = new MigrationConfigFile($config_filename);
+        if(isset($options['provider'])){
+            $providerDirectory = new CreateProviderDirectory($config);
+            $providerDirectory->setProvider($options['provider']);
+            $providerDirectory->run();
+        } elseif (isset($options['new'])) {
+            $newMigration = new CreateMigration($config);
             $newMigration->setNewMigrationName($options['new']);
             $newMigration->run();
         } else {
-            $config = new \Migration\MigrationConfigFile($config_filename);
-            $migration = new \Migration\Migration($config);
+            $migration = new Migration($config);
             $migration->run();
         }
     }
-} catch (\Throwable $t) {
+} catch (Throwable $t) {
     echo $t->getMessage() . PHP_EOL;
 }
