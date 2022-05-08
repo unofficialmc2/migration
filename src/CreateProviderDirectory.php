@@ -74,5 +74,6 @@ class CreateProviderDirectory
         if (!mkdir($concurrentDirectory ) && !is_dir($concurrentDirectory)) {
             throw new RuntimeException("impossible de créer le dossier du provier '$provider' dans '$migrationDirectory'.");
         }
+        echo "Le dossier $concurrentDirectory a été créé avec succes." . PHP_EOL;
     }
 }

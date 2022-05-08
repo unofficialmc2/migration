@@ -6,7 +6,7 @@ use Helper\DbQuickUse;
 use Helper\PDOFactory;
 use PDO;
 
-class DbTastCase extends TestCase
+class DbTestCase extends TestCase
 {
     /** @var ?\PDO instance d'acces à la base */
     private $pdo = null;

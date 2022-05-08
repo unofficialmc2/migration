@@ -3,7 +3,7 @@
 
 namespace Migration;
 
-class BinTest extends DbTastCase
+class BinTest extends DbTestCase
 {
     /** @var string  */
     protected $cmd = __DIR__ . '/../bin/migrate';
@@ -58,6 +58,18 @@ class BinTest extends DbTastCase
         $this->putMigrationConfigFile();
         $this->deleteDbFile();
         $this->runMigrate();
+    }
+
+
+    /**
+     * test de migrateInitCommand
+     */
+    public function testCreatProviderDirectory(): void
+    {
+        $this->deleteConfigFile();
+        $this->deleteDbFile();
+        $this->runMigrate(['-p', 'mysql']);
+        self::assert(self::CONFIGFILE);
     }
 
 
