@@ -1,12 +1,35 @@
 <?php
-
+declare(strict_types=1);
 
 namespace Migration;
 
+/**
+ * Test des differentes options
+ */
 class BinTest extends DbTestCase
 {
     /** @var string  */
     protected $cmd = __DIR__ . '/../bin/migrate';
+
+    /**
+     * Tentative de résolution de bug xdebug
+     * @return string
+     */
+    public function __toString(): string
+    {
+        return __CLASS__ . " " . var_export($this, true);
+    }
+
+    /**
+     * test de migrateInitCommand
+     */
+    public function testMigrateInitCommand(): void
+    {
+        $this->deleteConfigFile();
+        $this->deleteDbFile();
+        $this->runMigrate(['-i']);
+        self::assertFileExists(self::CONFIGFILE);
+    }
 
     /**
      * @param string[] $param
@@ -24,18 +47,6 @@ class BinTest extends DbTestCase
             echo($content);
         }
     }
-
-    /**
-     * test de migrateInitCommand
-     */
-    public function testMigrateInitCommand(): void
-    {
-        $this->deleteConfigFile();
-        $this->deleteDbFile();
-        $this->runMigrate(['-i']);
-        self::assertFileExists(self::CONFIGFILE);
-    }
-
 
     /**
      * test de migrateInitCommand
@@ -68,10 +79,10 @@ class BinTest extends DbTestCase
     {
         $this->deleteConfigFile();
         $this->deleteDbFile();
+        $this->runMigrate(['-i']);
         $this->runMigrate(['-p', 'mysql']);
-        self::assert(self::CONFIGFILE);
+        self::assertFileExists(self::CONFIGFILE);
     }
-
 
     /**
      * test de migrateInitCommand

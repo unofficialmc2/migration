@@ -30,10 +30,10 @@ class CreateProviderDirectory
      * @param-stan  "postgres"|"postgresql"|"mysql"|"sqlite" $provider
      * @return void
      */
-    public function setProvider(string $provider): CreateProviderDirectory
+    public function setProvider(string $provider): void
     {
         $provider = strtolower($provider);
-        if(in_array($provider, self::AUTORIZED_PROVIDER)){
+        if (in_array($provider, self::AUTORIZED_PROVIDER)) {
             $providers = implode(", ", self::AUTORIZED_PROVIDER);
             throw new InvalidArgumentException("Le provider '$provider' n'est pas connu. Utiliser : $providers.");
         }
@@ -49,7 +49,7 @@ class CreateProviderDirectory
             throw new LogicException("le nom du provider n'a pas été donné");
         }
         $migrationDirectory = $this->config->migration_directory;
-        if(!is_dir($migrationDirectory)){
+        if (!is_dir($migrationDirectory)) {
             throw new LogicException(
                 "impossible de créer le dossier du provider, le dossier de migration ($migrationDirectory) n'existe pas"
             );
@@ -68,12 +68,19 @@ class CreateProviderDirectory
         }
     }
 
+    /**
+     * @param string $migrationDirectory
+     * @param string|null $provider
+     * @return void
+     */
     private function createDirectory(string $migrationDirectory, ?string $provider)
     {
-        $concurrentDirectory = $migrationDirectory . DIRECTORY_SEPARATOR . $provider;
-        if (!mkdir($concurrentDirectory ) && !is_dir($concurrentDirectory)) {
-            throw new RuntimeException("impossible de créer le dossier du provier '$provider' dans '$migrationDirectory'.");
+        if ($provider !== null) {
+            $concurrentDirectory = $migrationDirectory . DIRECTORY_SEPARATOR . $provider;
+            if (!mkdir($concurrentDirectory) && !is_dir($concurrentDirectory)) {
+                throw new RuntimeException("impossible de créer le dossier du provier '$provider' dans '$migrationDirectory'.");
+            }
+            echo "Le dossier $concurrentDirectory a été créé avec succes." . PHP_EOL;
         }
-        echo "Le dossier $concurrentDirectory a été créé avec succes." . PHP_EOL;
     }
 }

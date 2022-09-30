@@ -66,7 +66,7 @@ class Migration extends MigrationCore
                     $this->config->host,
                     $this->config->user,
                     $this->config->pass,
-                    $this->config->port ?? 5432
+                    $this->config->port
                 ));
                 break;
             default:
