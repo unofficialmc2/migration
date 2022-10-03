@@ -33,7 +33,7 @@ class CreateProviderDirectory
     public function setProvider(string $provider): void
     {
         $provider = strtolower($provider);
-        if (in_array($provider, self::AUTORIZED_PROVIDER)) {
+        if (!in_array($provider, self::AUTORIZED_PROVIDER)) {
             $providers = implode(", ", self::AUTORIZED_PROVIDER);
             throw new InvalidArgumentException("Le provider '$provider' n'est pas connu. Utiliser : $providers.");
         }
@@ -77,7 +77,7 @@ class CreateProviderDirectory
     {
         if ($provider !== null) {
             $concurrentDirectory = $migrationDirectory . DIRECTORY_SEPARATOR . $provider;
-            if (!mkdir($concurrentDirectory) && !is_dir($concurrentDirectory)) {
+            if (!is_dir($concurrentDirectory) && !mkdir($concurrentDirectory) && !is_dir($concurrentDirectory)) {
                 throw new RuntimeException("impossible de créer le dossier du provier '$provider' dans '$migrationDirectory'.");
             }
             echo "Le dossier $concurrentDirectory a été créé avec succes." . PHP_EOL;

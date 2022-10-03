@@ -8,11 +8,38 @@ use PDO;
 
 class DbTestCase extends TestCase
 {
-    /** @var ?\PDO instance d'acces à la base */
-    private $pdo = null;
-
     protected const DBPROVIDER = "sqlite";
     protected const DBFILE = "./data.sqlite";
+    /** @var \PDO|null : instance d'acces à la base */
+    private ?PDO $pdo = null;
+
+    /**
+     * @return \Helper\DbQuickUse
+     */
+    public function query(): DbQuickUse
+    {
+        $pdo = $this->getPdo();
+        return new DbQuickUse($pdo);
+    }
+
+    /**
+     * @return \PDO
+     */
+    public function getPdo(): PDO
+    {
+        if ($this->pdo === null) {
+            if (!is_file(self::DBFILE)) {
+                $this->createEmptyDbFile();
+            }
+            $this->pdo = PDOFactory::sqlite(self::DBFILE);
+        }
+        return $this->pdo;
+    }
+
+    protected function createEmptyDbFile(): void
+    {
+        file_put_contents(self::DBFILE, '');
+    }
 
     /**
      *
@@ -31,41 +58,29 @@ class DbTestCase extends TestCase
                 throw new \RuntimeException(sprintf('Directory "%s" was not created', $concurrentDirectory));
             }
         }
-        file_put_contents(self::CONFIGFILE, json_encode($config, JSON_PRETTY_PRINT));
-    }
-
-    protected function createEmptyDbFile(): void
-    {
-        file_put_contents(self::DBFILE, '');
-    }
-
-    /**
-     * @return \PDO
-     */
-    public function getPdo(): PDO
-    {
-        if ($this->pdo === null) {
-            if (!is_file(self::DBFILE)) {
-                $this->createEmptyDbFile();
-            }
-            $this->pdo = PDOFactory::sqlite(self::DBFILE);
+        try {
+            file_put_contents(self::CONFIGFILE, json_encode($config, JSON_THROW_ON_ERROR | JSON_PRETTY_PRINT));
+        } catch (\JsonException $e) {
+            /** @noinspection ForgottenDebugOutputInspection */
+            error_log($e->getMessage() . ", " . $e->getFile() . "(" . $e->getLine() . ")");
         }
-        return $this->pdo;
-    }
-
-    /**
-     * @return \Helper\DbQuickUse
-     */
-    public function query(): DbQuickUse
-    {
-        $pdo = $this->getPdo();
-        return new DbQuickUse($pdo);
     }
 
     protected function deleteDbFile(): void
     {
-        if (is_file(self::DBFILE)) {
-            unlink(self::DBFILE);
+        if (file_exists(self::DBFILE)) {
+            $this->pdo = null;
+            $deleted = false;
+            while (!$deleted) {
+                try {
+                    if (is_writable(self::DBFILE)) {
+                        $deleted = unlink(self::DBFILE);
+                    }
+                } catch (\Throwable $t) {
+                    $deleted = false;
+                }
+            }
         }
+
     }
 }

@@ -78,4 +78,5 @@ Desktop.ini
 #  |___/
 *~
 *.log
+/data.sqlite
 /migration-config.json

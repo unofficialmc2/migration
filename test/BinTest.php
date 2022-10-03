@@ -8,7 +8,7 @@ namespace Migration;
  */
 class BinTest extends DbTestCase
 {
-    /** @var string  */
+    /** @var string */
     protected $cmd = __DIR__ . '/../bin/migrate';
 
     /**
@@ -77,11 +77,13 @@ class BinTest extends DbTestCase
      */
     public function testCreatProviderDirectory(): void
     {
+        $this->expectOutputRegex("/Le dossier .* a été créé avec succes/");
         $this->deleteConfigFile();
         $this->deleteDbFile();
-        $this->runMigrate(['-i']);
+        $this->putMigrationConfigFile();
         $this->runMigrate(['-p', 'mysql']);
         self::assertFileExists(self::CONFIGFILE);
+        rmdir(__DIR__ . "/migration/mysql");
     }
 
     /**
@@ -96,4 +98,5 @@ class BinTest extends DbTestCase
         $nbStory = $this->query()->countElement('migration_story');
         self::assertEquals(0, $nbStory);
     }
+
 }

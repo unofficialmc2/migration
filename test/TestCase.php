@@ -21,4 +21,14 @@ class TestCase extends PHPUnitTestCase
             unlink(self::CONFIGFILE);
         }
     }
+
+    protected function createMigrationDirectory() :void
+    {
+        if (is_file(self::CONFIGFILE)) {
+            $config = json_decode(
+                file_get_contents(self::CONFIGFILE)
+            );
+            var_dump($config);
+        }
+    }
 }
