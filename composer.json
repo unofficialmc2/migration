@@ -1,12 +1,12 @@
 {
-  "name": "fzed51/migration",
+  "name": "unofficialmc2/migration",
   "description": "Outil de migration de base de donnée",
   "type": "library",
   "license": "MIT",
   "authors": [
     {
       "name": "Fabien Sanchez",
-      "email": "fzed51@users.noreply.github.com"
+      "email": "fabien.sanchez@arche-mc2.fr"
     }
   ],
   "minimum-stability": "stable",
