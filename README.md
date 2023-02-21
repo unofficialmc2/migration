@@ -7,7 +7,7 @@ migration est un utilitaire de migration de structure de base de données en lig
 installation avec composer:
 
 ```shell
-composer require fzed51/migration
+composer require unofficialmc2/migration
 ```
 
 Une fois installé, créer un fichier de configuration
