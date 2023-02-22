@@ -15,8 +15,8 @@
     "ext-json": "*",
     "ext-mbstring": "*",
     "ext-pdo": "*",
-    "fzed51/pdo-helper": "^2.0",
-    "fzed51/console-options": "^2.0"
+    "unofficialmc2/pdo-helper": "^2.0",
+    "unofficialmc2/console-options": "^2.0"
   },
   "bin": [
     "./bin/migrate"
